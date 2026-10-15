@@ -2,9 +2,9 @@ name: HMS Backend CI
 
 on:
   push:
-    branches: [week1-backend, main]
+    branches: [devops/backend-ci, week1-backend, main]
   pull_request:
-    branches: [week1-backend, main]
+    branches: [devops/backend-ci, week1-backend, main]
 
 jobs:
   backend-check:
