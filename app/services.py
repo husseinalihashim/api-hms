@@ -39,6 +39,7 @@ def create_patient(session: Session, data: PatientCreate) -> dict:
     patient = Patient(name=data.name, birth_date=data.birth_date, phone=data.phone)
     session.add(patient)
     session.flush()
+    assert patient.id is not None
     for medicine in data.allergies:
         session.add(Allergy(patient_id=patient.id, medicine=medicine))
     session.commit()
@@ -129,7 +130,7 @@ def add_prescription(
 ) -> Prescription:
     get_admission(session, admission_id)
     prescription = Prescription(
-        admission_id=admission_id, medicine=data.medicine, dose=data.dose
+        admission_id=admission_id, medicine=data.medicine, dose=data.dose, created_at=now()
     )
     session.add(prescription)
     session.commit()
@@ -166,6 +167,7 @@ def mark_administered(session: Session, user: User, prescription_id: int) -> Pre
 
 def add_vitals(session: Session, user: User, admission_id: int, data: VitalsCreate) -> Vitals:
     get_admission(session, admission_id)
+    assert user.id is not None
     vitals = Vitals(
         admission_id=admission_id,
         temperature=data.temperature,

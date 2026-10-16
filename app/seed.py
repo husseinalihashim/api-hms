@@ -23,6 +23,7 @@ with Session(engine) as session:
         session.add(ward)
         session.commit()
         session.refresh(ward)
+        assert ward.id is not None
         for number in range(1, 6):
             session.add(Bed(ward_id=ward.id, number=number))
 

@@ -98,7 +98,7 @@ def login(
 ):
     user = session.exec(
         select(User).where(
-            or_(User.email == form.username, User.username == form.username)
+            or_(col(User.email) == form.username, col(User.username) == form.username)
         )
     ).first()
     if user is None or not verify_password(form.password, user.hashed_password):
@@ -123,6 +123,7 @@ def create_patient(
     session.add(patient)
     session.commit()
     session.refresh(patient)
+    assert patient.id is not None
     for medicine in data.allergies:
         session.add(Allergy(patient_id=patient.id, medicine=medicine))
     session.commit()
@@ -336,6 +337,7 @@ def add_vitals(
 ):
     admission = get_admission_or_404(session, admission_id)
     check_nurse_ward(session, user, admission)
+    assert user.id is not None
     vitals = Vitals(
         admission_id=admission_id,
         temperature=data.temperature,
