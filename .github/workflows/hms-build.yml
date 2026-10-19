@@ -1,0 +1,13 @@
+name: HMS Image Build
+on:
+  push:
+    branches: [auto-cd-prep]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -f Containerfile -t hms-api:ci .
+      - name: Test image
+        run: docker run --rm -e DATABASE_URL=sqlite:// -e SECRET_KEY=ci-test-only hms-api:ci python -c "from app.main import app; assert app.openapi()"
